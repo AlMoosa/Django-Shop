@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-sm-12">
+        <h2>{{ category.name }}</h2>
+    <hr>
+    {% for product in products_of_category %}
+    <div class="col-sm-4">
+        <div style="text-align: center;"><img src="{{ product.image.url }}"/></div>
+        <h4 class="text-center">{{ product.title }}</h4>
+        <p class="text-center" style="font-size: 20px;">Ціна: <strong>{{ product.price }} грн.</strong></p>
+        <p class="text-center"><a href="{% url 'add_to_cart' %}"><button class="btn btn-danger">Добавити в корзину</button></a></p>
+    </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
