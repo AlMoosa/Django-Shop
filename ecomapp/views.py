@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Category, Product, CartItem, Cart
 from django.http import JsonResponse
-from decimal import Decimal
+from .forms import OrderForm
 
 
 def base_view(request):
@@ -118,6 +118,14 @@ def cart_create(request):
         request.session['cart_id'] = cart_id
         cart = Cart.objects.get(id=cart_id)
     return cart
+
+
+def order_create_view(request):
+    form = OrderForm(request.POST or None)
+    context = {
+        'form': form
+    }
+    return render(request, 'order.html', context)
 
 
 

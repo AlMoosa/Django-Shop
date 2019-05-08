@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form action="" method="POST">
+    <div class="col-sm-4">{{form.name|as_crispy_field}}
+    </div>
+    <div class="col-sm-4">{{form.last_name|as_crispy_field}}
+    </div>
+    <div class="col-sm-4">{{form.phone|as_crispy_field}}
+    </div>
+    {{form.buying_type|as_crispy_field}}
+    {{form.date|as_crispy_field}}
+    {{form.comments|as_crispy_field}}
+    <input type="submit" class="btn btn-success" value="Оформити замолення">
+</form>
+{% endblock content %}
