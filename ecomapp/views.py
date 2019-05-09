@@ -1,7 +1,8 @@
-from django.shortcuts import render
-from .models import Category, Product, CartItem, Cart
-from django.http import JsonResponse
+from django.shortcuts import render, reverse
+from .models import Category, Product, CartItem, Cart, Order
+from django.http import JsonResponse, HttpResponseRedirect
 from .forms import OrderForm
+
 
 
 def base_view(request):
@@ -126,6 +127,36 @@ def order_create_view(request):
         'form': form
     }
     return render(request, 'order.html', context)
+
+
+def make_order_view(request):
+    cart = cart_create(request)
+    form = OrderForm(request.POST or None)
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        last_name = form.cleaned_data['last_name']
+        phone = form.cleaned_data['phone']
+        buying_type = form.cleaned_data['address']
+        address = form.cleaned_data['address']
+        comments = form.cleaned_data['comments']
+        new_order = Order()
+        new_order.user = request.user
+        new_order.save()
+        new_order.items.add(cart)
+        new_order.first_name = name
+        new_order.last_name = last_name
+        new_order.phone = phone
+        new_order.address = address
+        new_order.buying_type = buying_type
+        new_order.comments = comments
+        new_order.total = cart.cart_total
+        new_order.save()
+        del request.session['cart_id']
+        del request.session['total']
+        return render(request, 'thank_you.html')
+
+
+
 
 
 

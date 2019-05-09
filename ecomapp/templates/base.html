@@ -60,7 +60,7 @@
                 {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{% url 'cart' %}">Корзина <span class="badge" id="cart_count">{{ cart.items.count }}</span></a></li>
+                    <li><a href="{% url 'cart' %}">Корзина <span class="badge" id="cart_count">{% if not request.session.total %} 0 {% else %} {{ request.session.total }} {% endif %}</span></a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
