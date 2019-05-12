@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3 class="text-center">Особистий кабінет користувача {{request.user}}</h3>
+<hr>
+<h4 class="text-center">Ваші замовлення</h4>
+<table class="table">
+<tr class="text-center" style="background: lightblue;">
+<td>Номер замовлення</td>
+<td>Дата замовлення</td>
+<td>Статус замовлення</td>
+<td>Вартість замовлення</td>
+<td>Деталі замовлення</td>
+<td></td>
+</tr>
+{% for item in order %}
+<tr class="text-center">
+    <td>{{item.id}}</td>
+    <td>{{item.date}}</td>
+    <td>{{item.status}}</td>
+    <td>{{item.total}} грн.</td>
+    <td><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal-{{item.id}}">Деталі замволення</button></td>
+    <td></td>
+</tr>
+{% endfor %}
+</table>
+{% for item in order %}
+<!-- Modal -->
+<div class="modal fade" id="myModal-{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Замовлення № {{item.id}}</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+            <td>Назва товару</td>
+            <td>Кількість</td>
+            <td>Вартість</td>
+            {% for order_item in item.items.items.all %}
+            <tr>
+                <td>{{order_item.product.title}}</td>
+                <td>{{order_item.qty}} шт.</td>
+                <td>{{order_item.item_total}} грн.</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>В сумі:</td>
+                <td><strong>{{item.items.cart_total}} грн.</strong></td>
+            </tr>
+        </table>
+          <h3 class="">Замвоник:</h3>
+          <p>Імя: {{item.first_name}}
+          <p>Прізвище: {{item.last_name}}</p>
+          <p>Телефон: {{item.phone}}</p>
+          <h3>Тип доставки</h3>
+          <p>{% if item.buying_type == 'self' %} Самовывоз {% else %}Доставка{% endif %}</p>
+   		  <p>{% if item.buying_type == 'delivery' %} {{ item.address }}{% endif %}</p>
+   		  <h3>Комментарии к заказу</h3>
+          <p>{{ item.comments }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock content %}

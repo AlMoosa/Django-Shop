@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from transliterate import translit
 from django.urls import reverse
 from decimal import Decimal
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -134,16 +135,16 @@ ORDER_STATUS_CHOISES = (
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    items = models.ManyToManyField(Cart)
+    items = models.ForeignKey(Cart, on_delete=models.CASCADE, default = timezone.now())
     total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
-    firs_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=200)
     buying_type = models.CharField(max_length=40, choices=(('Самовивіз', 'Самовивіз'), ('Доставка', 'Доставка')), default='Самовивіз')
     date = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(max_length=500)
-    status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOISES)
+    status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOISES, default='Прийнятий в обробку')
 
     class Meta:
         verbose_name = 'Замовлення'

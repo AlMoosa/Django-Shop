@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h3 class="text-center">Реїстрація нового користувача</h3>
+<hr>
+<div class="col-sm-8 col-sm-offset-2">
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form|crispy}}
+    <input type="submit" class="btn btn-success btn-block" value="Зареєструватися">
+</form>
+</div>
+{% endblock content %}

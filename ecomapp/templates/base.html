@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop Homepage - Start Bootstrap Template</title>
+    <title>Shop Kontakt - Smartphones and accesories shop</title>
 
     <!-- jQuery -->
         <script src="{% static 'js/jquery.js' %}"></script>
@@ -58,6 +58,27 @@
                         </ul>
                     </li>
                 {% endif %}
+                    {% if not request.user.is_authenticated %}
+                    <li>
+                        <p class="navbar-text">Вітаю, гість!</p>
+                    </li>
+                    <li>
+                        <a href="{% url 'login' %}">Ввійти</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'registration' %}">Зареєструватися</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <p class="navbar-text">Вітаю, {{request.user}}</p>
+                    </li>
+                    <li>
+                        <a href="{% url 'account' %}">Особистий кабінет</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Вийти</a>
+                    </li>
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% url 'cart' %}">Корзина <span class="badge" id="cart_count">{% if not request.session.total %} 0 {% else %} {{ request.session.total }} {% endif %}</span></a></li>
@@ -118,22 +139,22 @@
                 <div class="row">
                     {% for product in products %}
                     <div class="col-sm-4 col-lg-4 col-md-4">
-                        <div class="thumbnail">
-                            <br>
-                            <img src="{{ product.image.url }}" alt="" style="width: auto; height: auto;﻿">
+                        <div class="thumbnail" style="height:420px; position:relative;">
+                            <img src="{{ product.image.url }}" alt="" style="width:100%; height: 250px;">
                             <div class="caption">
-                                <h4 class="pull-right">{{ product.price }} грн.</h4>
-                                <h5><strong><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></strong></h5>
-                                <p>{{ product.description }}</p>
-                                <a class="text-center" href="#"><button class="btn btn-danger">Добавити в корзину</button> </a>
+                                <h4 class="text-center"><strong><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></strong></h4>
+                                <h3 class="text-center">{{ product.price }} грн.</h3>
+                                {%if request.user.is_authenticated%}
+                                <div style="position:absolute; bottom:0; right:40px;">
+                                <p class="text-center"><a href="#" class="add_to_cart" data-slug="{{product.slug}}"><button class="btn btn-danger">Добавити в корзину</button></a></p>
+                                </div>
+                                {%endif%}
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-
             </div>
-
         </div>
         {% endblock content %}
     </div>
@@ -157,6 +178,27 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script>
+$(document).ready(function () {
+    $('.add_to_cart').on('click', function(e) {
+        e.preventDefault()
+        product_slug = $(this).attr('data-slug')
+        data = {
+            'product_slug': product_slug
+        }
+        $.ajax({
+            type: 'GET',
+            url: '{% url 'add_to_cart' %}',
+            data: data,
+            success: function (data) {
+                $('#cart_count').html(data.cart_total)
+
+            }
+        })
+    })
+})
+</script>
 
 </body>
 

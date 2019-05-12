@@ -1,36 +1,39 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div class="col-sm-4">
-        <div style="text-align: center; width: 100%;"><img src="{{ product.image.url }}"/> </div>
-    </div>
-    <div class="col-sm-8">
-        <h3 class="text-center">{{ product.title }}</h3>
-        <p>{% lorem %}</p>
-        <p>{{ product.description }}</p>
-        <hr>
-        <p style="font-size: 20px;">Ціна: <strong>{{ product.price }} грн.</strong></p>
-        <a href="#" class="add_to_cart" data-slug="{{product.slug}}"><button class="btn btn-danger">Добавити в корзину</button></a>
-    </div>
-    <script>
-    $(document).ready(function () {
-        $('.add_to_cart').on('click', function(e) {
-            e.preventDefault()
-            product_slug = $(this).attr('data-slug')
-            console.log(product_slug)
-            data = {
-                'product_slug': product_slug
-            }
-            $.ajax({
-                type: 'GET',
-                url: '{% url 'add_to_cart' %}',
-                data: data,
-                success: function (data) {
-                    $('#cart_count').html(data.cart_total)
+<div class="col-sm-4">
+<img src="{{ product.image.url }}" style="width:80%; height:250px;">
+</div>
+<div class="col-sm-8">
+    <h3 class="text-center">{{ product.title }}</h3>
+    <p>{% lorem %}</p>
+    <p>{{ product.description }}</p>
+    <hr>
+    <p style="font-size: 20px;">Ціна: <strong>{{ product.price }} грн.</strong></p>
+    {%if request.user.is_authenticated%}
+    <a href="#" class="add_to_cart" data-slug="{{product.slug}}"><button class="btn btn-danger">Добавити в корзину</button></a>
+    {%else%}
+    <p class='text-center'>Замовляти товар можуть тільки авторизовані користувачі. Будбласка <a href="{% url 'login' %}">увійдіть</a> або <a href="{% url 'registration' %}">зареєструйтесь</a></p>
+    {%endif%}
+</div>
+<script>
+$(document).ready(function () {
+    $('.add_to_cart').on('click', function(e) {
+        e.preventDefault()
+        product_slug = $(this).attr('data-slug')
+        data = {
+            'product_slug': product_slug
+        }
+        $.ajax({
+            type: 'GET',
+            url: '{% url 'add_to_cart' %}',
+            data: data,
+            success: function (data) {
+                $('#cart_count').html(data.cart_total)
 
-                }
-            })
+            }
         })
     })
-    </script>
+})
+</script>
 {% endblock content %}
